@@ -1,0 +1,48 @@
+# Nome do workflow que aparecerá na aba Actions do GitHub
+name: Web E2E Tests
+
+# Define quando o workflow será executado
+# workflow_dispatch permite execução manual através da interface do GitHub
+on:
+  workflow_dispatch:
+
+# Define os jobs (trabalhos) que serão executados
+jobs:
+  e2e-tests:
+    # Define o sistema operacional onde os testes serão executados
+    runs-on: windows-latest
+
+    # Define os passos que serão executados em sequência
+    steps:
+      # Passo 1: Faz o clone do projeto para a máquina virtual
+      # actions/checkout@v4 é uma action oficial do GitHub
+      - uses: actions/checkout@v4
+
+      # Passo 2: Verifica a versão do Node.js instalada
+      # Útil para debug e garantir compatibilidade
+      - name: Node version
+        run: node --version
+
+      # Passo 3: Instala todas as dependências do projeto
+      # Lê o package.json e instala tudo que está em devDependencies
+      - name: Instalando dependências
+        run: npm install
+
+      # Passo 4: Executa os testes do Cypress em modo headless
+      # npx cypress run executa todos os testes em modo CLI (sem interface gráfica)
+      - name: Executando os testes
+        run: npx cypress run
+
+      # Passo 5: Faz upload dos artefatos gerados (relatórios, screenshots, vídeos)
+      # actions/upload-artifact@v4 é uma action oficial do GitHub
+      # if: ${{ !cancelled() }} garante que os artefatos sejam salvos mesmo se houver falhas
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          # Nome do arquivo zip que será gerado
+          name: relatorios
+          # Caminhos dos arquivos que serão incluídos no zip
+          path: |
+            cypress/reports
+            cypress/screenshots
+            cypress/videos

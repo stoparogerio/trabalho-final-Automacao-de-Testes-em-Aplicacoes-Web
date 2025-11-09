@@ -1,0 +1,52 @@
+# Dependências do Node.js
+node_modules/
+package-lock.json
+
+# Relatórios gerados pelo Cypress
+cypress/reports/
+*.html
+*.json
+
+# Screenshots capturadas durante os testes
+cypress/screenshots/
+
+# Vídeos das execuções dos testes
+cypress/videos/
+
+# Arquivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Arquivos do IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de teste temporários
+cypress/fixtures/test-file.txt
+
+# Arquivos de ambiente (caso use variáveis de ambiente)
+.env
+.env.local
+.env.test
+
+# Cache do Cypress
+.cypress_cache/
+
+# Resultados de testes
+test-results/
+results/
+mochawesome-report/
+
+# Arquivos de build (se houver)
+dist/
+build/
