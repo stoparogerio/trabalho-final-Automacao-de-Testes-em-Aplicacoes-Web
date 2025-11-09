@@ -45,7 +45,11 @@ jobs:
       # Passo 4.5: Verificar arquivos gerados
       - name: Verificar arquivos gerados
         run: |
-          Write-Host "=== Verificando arquivos gerados ===" -ForegroundColor Cyan
+          Write-Host "=== Verificando diretório atual ===" -ForegroundColor Cyan
+          Get-Location
+          Write-Host "`n=== Listando estrutura de pastas ===" -ForegroundColor Cyan
+          Get-ChildItem -Recurse -Directory | Select-Object FullName
+          Write-Host "`n=== Verificando arquivos gerados ===" -ForegroundColor Cyan
           if (Test-Path cypress/reports) { 
             Write-Host "✅ cypress/reports existe" -ForegroundColor Green
             Get-ChildItem cypress/reports -Recurse | Select-Object FullName, Length
@@ -77,9 +81,9 @@ jobs:
           name: cypress-relatorios
           # Caminhos dos arquivos que serão incluídos no zip
           path: |
-            cypress/reports/**/*
-            cypress/videos/**/*
-            cypress/screenshots/**/*
+            cypress/reports
+            cypress/videos
+            cypress/screenshots
           # Não falhar se algum arquivo não existir
-          if-no-files-found: warn
+          if-no-files-found: ignore
           retention-days: 30
