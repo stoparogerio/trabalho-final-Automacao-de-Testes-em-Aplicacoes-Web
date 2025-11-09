@@ -4,8 +4,8 @@ package-lock.json
 
 # Relatórios gerados pelo Cypress
 cypress/reports/
-*.html
-*.json
+cypress/reports/**/*.html
+cypress/reports/**/*.json
 
 # Screenshots capturadas durante os testes
 cypress/screenshots/
