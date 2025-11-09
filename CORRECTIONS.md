@@ -242,15 +242,118 @@ Se ainda houver falhas:
 
 ---
 
-## Corre��o 3 - Refatora��o Completa (Terceira Itera��o)
+## Corre��o 3 - Refatora��o Completa (Terceira Itera��o)
 
 **Problemas Persistentes:**
-- Test Case 5: Elemento n�o encontrado durante limpeza
-- Test Case 15: Timeout em modais ap�s 3 tentativas (retry)
+- Test Case 5: Elemento n�o encontrado durante limpeza
+- Test Case 15: Timeout em modais ap�s 3 tentativas (retry)
 
-**Mudan�as:**
+**Mudan�as:**
 1. **TC5**: Removido hook before(), fluxo linear, waits de 1-1.5s, clear() nos inputs
-2. **TC15**: Seletores .single-products, waits 3s produtos, modal timeout 20-25s, verifica��o duplicada
-3. **Estrat�gia**: Abordagem defensiva com m�ltiplos waits e seletores gen�ricos (cy.contains())
+2. **TC15**: Seletores .single-products, waits 3s produtos, modal timeout 20-25s, verifica��o duplicada
+3. **Estrat�gia**: Abordagem defensiva com m�ltiplos waits e seletores gen�ricos (cy.contains())
 
-**Arquivos:** testCase05_registerExistingEmail.cy.js (reescrito), testCase15_placeOrderRegisterBeforeCheckout.cy.js (3 se��es)
+**Arquivos:** testCase05_registerExistingEmail.cy.js (reescrito), testCase15_placeOrderRegisterBeforeCheckout.cy.js (3 seções)
+
+---
+
+## Correção 4 - Arquivo package.json Ausente (GitHub Actions)
+
+**Data:** 09/11/2025
+
+### 🐛 Problema Identificado
+
+O workflow do GitHub Actions estava falando com o seguinte erro:
+
+```
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, 
+open 'D:\a\trabalho-final-Automacao-de-Testes-em-Aplicacoes-Web\trabalho-final-Automacao-de-Testes-em-Aplicacoes-Web\package.json'
+```
+
+### 🔍 Causa Raiz
+
+1. **Arquivo `package.json` ausente:** O arquivo não estava commitado no repositório
+2. **Problema no `.gitignore`:** A linha `*.json` estava ignorando TODOS os arquivos JSON, incluindo o essencial `package.json`
+3. **Consequência:** O comando `npm install` não conseguia instalar as dependências (Cypress, cypress-mochawesome-reporter, etc.)
+
+### ✅ Solução Implementada
+
+#### 1. Criação do `package.json`
+
+Arquivo criado com todas as dependências necessárias:
+
+```json
+{
+  "name": "trabalho-final-automacao-testes-web",
+  "version": "1.0.0",
+  "description": "Automação de Testes E2E com Cypress para AutomationExercise.com",
+  "devDependencies": {
+    "cypress": "^13.6.0",
+    "cypress-mochawesome-reporter": "^3.8.0"
+  },
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:headless": "cypress run --headless",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "clean:reports": "rm -rf cypress/reports cypress/screenshots cypress/videos || rd /s /q cypress\\reports cypress\\screenshots cypress\\videos"
+  }
+}
+```
+
+**Dependências incluídas:**
+- `cypress@^13.6.0` - Framework de testes E2E
+- `cypress-mochawesome-reporter@^3.8.0` - Plugin para geração de relatórios HTML
+
+**Scripts disponíveis:**
+- `npm run cy:open` - Abre interface gráfica do Cypress
+- `npm run cy:run` - Executa testes em modo headless
+- `npm test` - Atalho para executar testes
+- `npm run test:headed` - Executa testes com navegador visível
+- `npm run clean:reports` - Limpa relatórios, screenshots e vídeos
+
+#### 2. Correção do `.gitignore`
+
+**Antes (incorreto):**
+```gitignore
+# Relatórios gerados pelo Cypress
+cypress/reports/
+*.html
+*.json
+```
+
+**Depois (correto):**
+```gitignore
+# Relatórios gerados pelo Cypress
+cypress/reports/
+cypress/reports/**/*.html
+cypress/reports/**/*.json
+```
+
+**Mudança:** Agora apenas arquivos HTML e JSON dentro de `cypress/reports/` são ignorados, permitindo que `package.json` seja commitado.
+
+### 📋 Impacto
+
+✅ **GitHub Actions agora pode:**
+- Executar `npm install` com sucesso
+- Instalar Cypress e dependências
+- Executar os testes E2E
+- Gerar relatórios
+
+✅ **Desenvolvedores podem:**
+- Clonar o repositório e rodar `npm install`
+- Ter todas as dependências instaladas automaticamente
+- Executar testes localmente sem configuração manual
+
+### 🎯 Próximos Passos
+
+1. ✅ Commitar `package.json` e `.gitignore` corrigido
+2. ⏳ Re-executar GitHub Actions para validar correção
+3. ⏳ Confirmar que todos os testes passam no CI/CD
+
+---
+
+**Arquivos modificados:**
+- `package.json` (criado)
+- `.gitignore` (corrigido)
