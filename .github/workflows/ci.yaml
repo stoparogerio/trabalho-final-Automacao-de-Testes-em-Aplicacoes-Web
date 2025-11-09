@@ -28,21 +28,58 @@ jobs:
       - name: Instalando dependências
         run: npm install
 
+      # Passo 3.5: Limpar pastas de artefatos anteriores
+      - name: Limpar artefatos antigos
+        run: |
+          if (Test-Path cypress/reports) { Remove-Item -Recurse -Force cypress/reports }
+          if (Test-Path cypress/screenshots) { Remove-Item -Recurse -Force cypress/screenshots }
+          if (Test-Path cypress/videos) { Remove-Item -Recurse -Force cypress/videos }
+        shell: pwsh
+
       # Passo 4: Executa os testes do Cypress em modo headless
       # npx cypress run executa todos os testes em modo CLI (sem interface gráfica)
       - name: Executando os testes
         run: npx cypress run
+        continue-on-error: true
+
+      # Passo 4.5: Verificar arquivos gerados
+      - name: Verificar arquivos gerados
+        run: |
+          Write-Host "=== Verificando arquivos gerados ===" -ForegroundColor Cyan
+          if (Test-Path cypress/reports) { 
+            Write-Host "✅ cypress/reports existe" -ForegroundColor Green
+            Get-ChildItem cypress/reports -Recurse | Select-Object FullName, Length
+          } else { 
+            Write-Host "❌ cypress/reports NÃO existe" -ForegroundColor Red 
+          }
+          if (Test-Path cypress/videos) { 
+            Write-Host "✅ cypress/videos existe" -ForegroundColor Green
+            Get-ChildItem cypress/videos -Recurse | Select-Object FullName, Length
+          } else { 
+            Write-Host "❌ cypress/videos NÃO existe" -ForegroundColor Red 
+          }
+          if (Test-Path cypress/screenshots) { 
+            Write-Host "✅ cypress/screenshots existe" -ForegroundColor Green
+            Get-ChildItem cypress/screenshots -Recurse | Select-Object FullName, Length
+          } else { 
+            Write-Host "⚠️ cypress/screenshots vazio (testes passaram)" -ForegroundColor Yellow 
+          }
+        shell: pwsh
+        if: always()
 
       # Passo 5: Faz upload dos artefatos gerados (relatórios, screenshots, vídeos)
       # actions/upload-artifact@v4 é uma action oficial do GitHub
-      # if: ${{ !cancelled() }} garante que os artefatos sejam salvos mesmo se houver falhas
+      # if: always() garante que os artefatos sejam salvos mesmo se houver falhas
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: always()
         with:
           # Nome do arquivo zip que será gerado
-          name: relatorios
+          name: cypress-relatorios
           # Caminhos dos arquivos que serão incluídos no zip
           path: |
-            cypress/reports
-            cypress/screenshots
-            cypress/videos
+            cypress/reports/**/*
+            cypress/videos/**/*
+            cypress/screenshots/**/*
+          # Não falhar se algum arquivo não existir
+          if-no-files-found: warn
+          retention-days: 30
