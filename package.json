@@ -1,0 +1,29 @@
+{
+  "name": "automacao-web-final",
+  "version": "1.0.0",
+  "description": "Projeto final de automação web com Cypress - AutomationExercise.com",
+  "author": "Rogério Alberto Stopa",
+  "license": "MIT",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:run:headless": "cypress run --headless",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "clean:reports": "rd /s /q cypress\\reports cypress\\screenshots cypress\\videos 2>nul || echo Limpeza concluída"
+  },
+  "devDependencies": {
+    "cypress": "^13.6.0",
+    "cypress-mochawesome-reporter": "^3.8.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0"
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "automation",
+    "testing",
+    "qa"
+  ]
+}
