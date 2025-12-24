@@ -6,8 +6,8 @@ module.exports = defineConfig({
     baseUrl: "https://automationexercise.com",
 
     // Configurações de viewport (resolução da tela)
-    viewportWidth: 1280,
-    viewportHeight: 720,
+    viewportWidth: 1536,
+    viewportHeight: 960,
 
     // Configurações de timeout - aumentados para operações mais lentas
     defaultCommandTimeout: 30000, // Tempo máximo de espera para comandos (30s)
